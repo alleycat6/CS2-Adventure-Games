@@ -1,11 +1,11 @@
-import os, textwrap
+import shutil, textwrap
 from item_inventory import Inventory
 
 
 # Print the given string to fit the terminal width (without line breaks in the
 # middle of words)
 def pretty_print(string):
-    print(textwrap.fill(string, os.get_terminal_size().columns))
+    print(textwrap.fill(string, shutil.get_terminal_size().columns))
 
 
 # Implements a room in the game, with descriptions, possible exits, and an

@@ -1,4 +1,4 @@
-import os, textwrap
+import shutil, textwrap
 from room import Room
 from item_inventory import Item, Inventory
 from input_parser import reformat, parse
@@ -7,7 +7,7 @@ from input_parser import reformat, parse
 # Print the given string to fit the terminal width (without line breaks in the
 # middle of words)
 def pretty_print(string):
-    print(textwrap.fill(string, os.get_terminal_size().columns))
+    print(textwrap.fill(string, shutil.get_terminal_size().columns))
 
 
 # Implements a text-based adventure game.
@@ -45,7 +45,7 @@ class Adventure():
         self.initialize_world()
 
         # Display initial messages
-        print("-" * os.get_terminal_size().columns)
+        print("-" * shutil.get_terminal_size().columns)
         self.display_current_room()
         self.world[self.current_room].visited = True
 

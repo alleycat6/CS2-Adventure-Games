@@ -1,12 +1,9 @@
 {
-    "packages": ["arrr"]
-}
-
-{
-  "files": {
-    "student_files/allison/adventure.py": "",
-    "student_files/allison/input_parser.py": "",
-    "student_files/allison/item_inventory.py": "",
-    "student_files/allison/room.py": ""
-  }
+    "packages": ["arrr", "shutil", "textwrap"],
+    "files": {
+        "student_files/allison/adventure.py": "",
+        "student_files/allison/input_parser.py": "",
+        "student_files/allison/item_inventory.py": "",
+        "student_files/allison/room.py": ""
+    }
 }
