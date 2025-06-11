@@ -1,5 +1,5 @@
 {
-    "packages": ["arrr", "shutil", "textwrap"],
+    "packages": ["shutil", "textwrap"],
     "files": {
         "student_files/allison/adventure.py": "",
         "student_files/allison/input_parser.py": "",
