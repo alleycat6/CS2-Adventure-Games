@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Infant:ital,wght@0,300..700;1,300..700&display=swap">
 
-    <script type="module" src="https://pyscript.net/snapshots/2024.9.2/core.js"></script>
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.27.7/full/pyodide.js"></script>
   </head>
 
   <body>
@@ -23,8 +23,97 @@
     </nav>
 
     <main>
-      <script type="python" terminal worker>
+      <div id="terminal"></div>
+
+      <script type="module">
+        let pyodide = await loadPyodide();
+
+        // Load Python files
+        async function load_file(old_filename, new_filename) {
+          const file = await fetch(old_filename);
+          const code = await file.text();
+          pyodide.FS.writeFile(new_filename, code);
+        }
+        
+        await load_file("/student_files/allison/input_parser.py", "input_parser.py");
+        await load_file("/student_files/allison/item_inventory.py", "item_inventory.py");
+        await load_file("/student_files/allison/room.py", "room.py");
+        await load_file("/student_files/allison/adventure.py", "adventure.py");
+
+        await pyodide.runPythonAsync(`
+          from adventure import *
+          game = Adventure()
+        `);
+
+        // Set up output capture override
+        await pyodide.runPythonAsync(`
+          import sys
+          from io import StringIO
+          sys.stdout = StringIO()
+        `);
+
+        const terminal = document.getElementById("terminal");
+
+        // Start game
+        await pyodide.runPythonAsync("game.play()");
+
+        const output_text = await pyodide.runPythonAsync(`
+          output = sys.stdout.getvalue()
+          sys.stdout.truncate(0)
+          sys.stdout.seek(0)
+          output
+        `);
+        const output_line = document.createElement("div");
+        output_line.textContent = output_text;
+        terminal.appendChild(output_line);
+
+        const input_line = document.createElement("div")
+        input_line.innerHTML = ">>> <span id='input'></span>";
+        terminal.appendChild(input_line);
+
+        let current_input = "";
+
+        // Main game loop
+        document.addEventListener("keydown", async function handler(e) {
+          if (e.key.length === 1 && !e.ctrlKey && !e.metaKey) {
+            current_input += e.key;
+          } else if (e.key === "Backspace") {
+            current_input = current_input.slice(0, -1);
+          } else if (e.key === "Enter") {
+            // Echo the input
+            const echo_line = document.createElement("div");
+            echo_line.textContent = `>>> ${current_input}`;
+            terminal.insertBefore(echo_line, input_line);
+
+            // Call Python function
+            await pyodide.runPythonAsync(`game.play(${JSON.stringify(current_input)})`);
+
+            // Display the result
+            const output_text = await pyodide.runPythonAsync(`
+              output = sys.stdout.getvalue()
+              sys.stdout.truncate(0)
+              sys.stdout.seek(0)
+              output
+            `);
+            const output_line = document.createElement("div");
+            output_line.textContent = output_text;
+            terminal.insertBefore(output_line, input_line);
+
+            // Clear current input
+            current_input = "";
+          }
+
+          // Update the input line
+          input_line.innerHTML = `>>> <span id='input'>${current_input}</span>`;
+
+          // Check if game is over
+          if (await pyodide.runPythonAsync("game.quit")) {
+            document.removeEventListener("keydown", handler);
+            input_line.remove();
+          }
+        });
       </script>
+
     </main>
   </body>
 </html>

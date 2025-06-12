@@ -23,3 +23,59 @@ h2 {
   font-style: italic;
   font-size: 1.2rem;
 }
+
+nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+nav a {
+  display: inline-block;
+  padding: 10px 16px;
+  background-color: #ccc;
+  color: black;
+  text-decoration: none;
+  font-size: 14px;
+  border-radius: 6px;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+nav a:hover {
+  background-color: #999;
+  transform: translateY(-2px);
+}
+nav a:active {
+  transform: scale(0.98);
+}
+
+li {
+  margin: 0.5rem 0;
+}
+
+code {
+  font-size: 0.8rem;
+}
+
+/*#terminal {
+  background: black;
+  color: #00ff00;
+  font-family: monospace;
+  font-size: 1rem;
+  padding: 1rem;
+  white-space: pre-wrap;
+  min-height: 60vh;
+  overflow-y: auto;
+}
+
+#input::after {
+  content: "_";
+  animation: blink 1s steps(1) infinite;
+}
+@keyframes blink {
+  0% { opacity: 1; }
+  50% { opacity: 0; }
+  100% { opacity: 1; }
+}*/
